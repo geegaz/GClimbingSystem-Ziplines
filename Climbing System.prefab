@@ -65,13 +65,18 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8388608
   walljumpEnabled: 1
-  walljumpViewDirectionAffect: 0.1
+  walljumpUseFreeHand: 1
+  walljumpViewDirectionAffect: 0.2
   walljumpStrength: 5
   useGrabButton: 0
   handRadius: 0.1
   handReach: 2
   handSurfaceDistance: 0.2
   moveSmoothing: 1
+  _sendEventsToClimbedObjects: 1
+  _eventTarget: {fileID: 0}
+  _startedEvent: StartedClimbing
+  _stoppedEvent: StoppedClimbing
 --- !u!114 &6207670217296417743
 MonoBehaviour:
   m_ObjectHideFlags: 0

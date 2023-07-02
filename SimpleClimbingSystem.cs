@@ -8,24 +8,26 @@ using VRC.Udon.Common;
 [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
 public class SimpleClimbingSystem : UdonSharpBehaviour
 {
-    public Transform leftHandTransform;
-    public Transform rightHandTransform;
-    public LayerMask climableMask;
+    [SerializeField] private Transform leftHandTransform;
+    [SerializeField] private Transform rightHandTransform;
+    [SerializeField] private LayerMask climableMask;
 
     [Space]
-    public bool walljumpEnabled = true;
-    [Tooltip("When pressing Jump while on a wall:\n- 0 is fully vertical jump\n- 1 is a jump in the direction the player is looking")]
-    public float walljumpViewDirectionAffect = 0.1f;
-    public float walljumpStrength = 5f;
+    [SerializeField] private bool walljumpEnabled = true;
+    [Tooltip("(VR only) Use the direction from the player's head to their free hand\ninstead of their view direction for walljump")]
+    [SerializeField] private bool walljumpUseFreeHand = true;
+    [Tooltip("When pressing Jump while on a wall:\n- 0 is a fully vertical jump\n- 1 is a jump in the direction the player is aiming")]
+    [SerializeField] private float walljumpViewDirectionAffect = 0.2f;
+    [SerializeField] private float walljumpStrength = 5f;
 
     [Header("VR Options")]
-    public bool useGrabButton = true;
-    public float handRadius = 0.1f;
+    [SerializeField] private bool useGrabButton = true;
+    [SerializeField] private float handRadius = 0.1f;
 
     [Header("Desktop Options")]
-    public float handReach = 2f;
-    public float handSurfaceDistance = 0.1f;
-    public float moveSmoothing = 1f;
+    [SerializeField] private float handReach = 2f;
+    [SerializeField] private float handSurfaceDistance = 0.1f;
+    [SerializeField] private float moveSmoothing = 1f;
 
     [Header("Events")]
     [SerializeField] private bool _sendEventsToClimbedObjects = true;
@@ -35,10 +37,9 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
 
     private bool _climbing = false;
     private HandType _climbingHand;
+    private Collider[] grabSurfaces = new Collider[1];
     
     [HideInInspector] public VRCPlayerApi localPlayer;
-
-    private Collider[] grabSurfaces = new Collider[1];
     
     private void Start()
     {
@@ -58,11 +59,25 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
     public override void InputJump(bool value, UdonInputEventArgs args)
     {
         if (walljumpEnabled && _climbing) {
+            Vector3 jump_direction = Vector3.zero;
+
             Vector3 headPos; 
             Vector3 headDirection;
             UpdateHeadValues(out headPos, out headDirection);
+            
+            if (walljumpUseFreeHand && localPlayer.IsUserInVR()) {
+                Vector3 handPos;
+                Transform handTf;
+                // Inverse of the current climbing hand
+                UpdateHandValues(1 - _climbingHand, out handPos, out handTf);
 
-            Vector3 force = Vector3.Lerp(Vector3.up, headDirection, walljumpViewDirectionAffect) * walljumpStrength;
+                jump_direction = (handPos - headPos).normalized;
+            }
+            else {
+                jump_direction = headDirection;
+            }
+
+            Vector3 force = Vector3.Lerp(Vector3.up, jump_direction, walljumpViewDirectionAffect) * walljumpStrength;
             localPlayer.SetVelocity(localPlayer.GetVelocity() + force);
             LetGo();
         }

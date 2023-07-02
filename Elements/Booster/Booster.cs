@@ -16,7 +16,7 @@ public class Booster : UdonSharpBehaviour
     [SerializeField] private SimpleClimbingSystem _climbingSystem;
     [SerializeField] private bool _forceDropOnStart = false;
     [SerializeField] private bool _forceDropOnStop = true;
-    [SerializeField] private Vector3 _climbingOffset = Vector3.zero;
+    //[SerializeField] private Vector3 _climbingOffset = Vector3.zero;
 
     [Header("Boost Properties")]
 
