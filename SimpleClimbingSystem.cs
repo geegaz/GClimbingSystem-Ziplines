@@ -15,8 +15,8 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
     [Space]
     public bool walljumpEnabled = true;
     [Tooltip("When pressing Jump while on a wall:\n- 0 is fully vertical jump\n- 1 is a jump in the direction the player is looking")]
-    public float walljumpViewDirectionAffect = 0.5f;
-    public float walljumpStrength = 6f;
+    public float walljumpViewDirectionAffect = 0.1f;
+    public float walljumpStrength = 5f;
 
     [Header("VR Options")]
     public bool useGrabButton = true;
@@ -24,12 +24,17 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
 
     [Header("Desktop Options")]
     public float handReach = 2f;
-    public float handSurfaceDistance = 0.2f;
+    public float handSurfaceDistance = 0.1f;
     public float moveSmoothing = 1f;
+
+    [Header("Events")]
+    [SerializeField] private bool _sendEventsToClimbedObjects = true;
+    [SerializeField] private UdonBehaviour _eventTarget;
+    [SerializeField] private string _startedEvent = "StartedClimbing";
+    [SerializeField] private string _stoppedEvent = "StoppedClimbing";
 
     private bool _climbing = false;
     private HandType _climbingHand;
-    private Transform _climbedObject;
     
     [HideInInspector] public VRCPlayerApi localPlayer;
 
@@ -49,7 +54,7 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
         }
     }
 
-    #region Inputs
+#region Inputs
     public override void InputJump(bool value, UdonInputEventArgs args)
     {
         if (walljumpEnabled && _climbing) {
@@ -120,7 +125,45 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
             LetGo();
         }
     }
-    #endregion
+#endregion
+
+#region Climbing Actions
+    public void LetGo() {
+        if (_climbingHand == HandType.LEFT) {
+            SendClimbingEvents(leftHandTransform.parent.gameObject, false);
+        }
+        else {
+            SendClimbingEvents(rightHandTransform.parent.gameObject, false);
+        }
+        
+        _climbing = false;
+    }
+
+    public void Grab(HandType hand) {
+        if (hand == HandType.LEFT) {
+            SendClimbingEvents(leftHandTransform.parent.gameObject, true);
+            if (_climbing) SendClimbingEvents(rightHandTransform.parent.gameObject, false);
+        }
+        else {
+            SendClimbingEvents(rightHandTransform.parent.gameObject, true);
+            if (_climbing) SendClimbingEvents(leftHandTransform.parent.gameObject, false);
+        }
+
+        _climbingHand = hand;
+        _climbing = true;
+    }
+
+    public void LetGoGrabbing(Transform tf) {
+        if (IsGrabbing(tf)) LetGo();
+    }
+
+    public void ForceGrab(Transform tf, HandType hand, Vector3 offset) {
+        Transform hand_tf = hand == HandType.LEFT ? leftHandTransform : rightHandTransform;
+        hand_tf.position = tf.position + offset;
+        hand_tf.parent = tf;
+
+        Grab(hand);
+    }
 
     private void DoGrab(HandType hand, bool smoothing = false) {
         Vector3 handPos; 
@@ -136,7 +179,9 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
         }
         localPlayer.SetVelocity(offset * (1.0f / Time.deltaTime));
     }
+#endregion
 
+#region Climbing Utilities
     private bool TestGrabVR(HandType hand) {
         Vector3 handPos; 
         Transform handTransform;
@@ -164,28 +209,7 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
         }
         return false;
     }
-
-    public void LetGo() {
-        _climbing = false;
-    }
-
-    public void LetGoGrabbing(Transform tf) {
-        if (IsGrabbing(tf)) LetGo();
-    }
-
-    public void Grab(HandType hand) {
-        _climbingHand = hand;
-        _climbing = true;
-    }
-
-    public void ForceGrab(Transform tf, HandType hand, Vector3 offset) {
-        Transform hand_tf = hand == HandType.LEFT ? leftHandTransform : rightHandTransform;
-        hand_tf.position = tf.position + offset;
-        hand_tf.parent = tf;
-
-        Grab(hand);
-    }
-
+    
     public bool IsClimbingWith(HandType hand) {
         return _climbing && _climbingHand == hand;
     }
@@ -210,4 +234,21 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
         head_pos = headTrackingData.position;
         head_dir = headTrackingData.rotation * Vector3.forward;
     }
+
+    private void SendClimbingEvents(GameObject climbed_object, bool started) {
+        if (_sendEventsToClimbedObjects) {
+            UdonBehaviour behavior = (UdonBehaviour)climbed_object.GetComponent(typeof(UdonBehaviour));
+            if (behavior) {
+                if (started) behavior.SendCustomEvent(_startedEvent);
+                else  behavior.SendCustomEvent(_stoppedEvent);
+            }
+        }
+
+        if (_eventTarget) {
+            if (started) _eventTarget.SendCustomEvent(_startedEvent);
+            else  _eventTarget.SendCustomEvent(_stoppedEvent);
+        }
+    }
+#endregion
 }
+

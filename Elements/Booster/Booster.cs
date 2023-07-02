@@ -155,7 +155,8 @@ public class Booster : UdonSharpBehaviour
     // speed but might have a bit of delay.
     // This also means that you might get your own booster reset
     // if someone starts the booster after not receiving the event
-
+    
+    /*
     public override void Interact()
     {
         // Only send the event if the booster is not started
@@ -170,6 +171,10 @@ public class Booster : UdonSharpBehaviour
     public override void InputUse(bool value, UdonInputEventArgs args)
     {
         if (value) _lastInputHand = args.handType;
+    }*/
+
+    public void StartedClimbing() {
+        if (state == -1) _SendStartEvent();
     }
 
     public void _SendStartEvent() {
