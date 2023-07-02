@@ -132,7 +132,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 4ede9d00febedf049a3003155f45fb0d, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 1
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -319,7 +319,6 @@ MonoBehaviour:
   boostSpeed: 10
   rewindSpeed: 5
   _lineRenderer: {fileID: 0}
-  _lineOffset: 0
   _boostingContinuous: {fileID: 2508578660855376584}
   _startImpulse: {fileID: 5119395148901535639}
   _stopImpulse: {fileID: 109448297302660616}
