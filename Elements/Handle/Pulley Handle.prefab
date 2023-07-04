@@ -197,7 +197,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5943405398778023600}
+  - {fileID: 5507948313376560858}
   - {fileID: 6264230408350416660}
   - {fileID: 5704082604893735092}
   - {fileID: 7643819115367022199}
@@ -527,78 +527,88 @@ MonoBehaviour:
   VolumetricRadius: 0
   EnableSpatialization: 1
   UseAudioSourceVolumeCurve: 0
---- !u!1001 &8062537406243271713
+--- !u!1001 &7788181324468962493
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 5062614668327060212}
     m_Modifications:
-    - target: {fileID: 3950505804151398443, guid: 8d31447528e83a0448fae6b71c0f17f5,
-        type: 3}
-      propertyPath: m_Name
-      value: Zipline Handle ORL
-      objectReference: {fileID: 0}
-    - target: {fileID: 4438531309733706385, guid: 8d31447528e83a0448fae6b71c0f17f5,
+    - target: {fileID: 2334276833820299879, guid: 10280eb718d395540b1c6aa3eef68251,
         type: 3}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4438531309733706385, guid: 8d31447528e83a0448fae6b71c0f17f5,
+    - target: {fileID: 2334276833820299879, guid: 10280eb718d395540b1c6aa3eef68251,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 4438531309733706385, guid: 8d31447528e83a0448fae6b71c0f17f5,
+    - target: {fileID: 2334276833820299879, guid: 10280eb718d395540b1c6aa3eef68251,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4438531309733706385, guid: 8d31447528e83a0448fae6b71c0f17f5,
+    - target: {fileID: 2334276833820299879, guid: 10280eb718d395540b1c6aa3eef68251,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4438531309733706385, guid: 8d31447528e83a0448fae6b71c0f17f5,
+    - target: {fileID: 2334276833820299879, guid: 10280eb718d395540b1c6aa3eef68251,
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.7071068
       objectReference: {fileID: 0}
-    - target: {fileID: 4438531309733706385, guid: 8d31447528e83a0448fae6b71c0f17f5,
+    - target: {fileID: 2334276833820299879, guid: 10280eb718d395540b1c6aa3eef68251,
         type: 3}
       propertyPath: m_LocalRotation.x
       value: 0.7071068
       objectReference: {fileID: 0}
-    - target: {fileID: 4438531309733706385, guid: 8d31447528e83a0448fae6b71c0f17f5,
+    - target: {fileID: 2334276833820299879, guid: 10280eb718d395540b1c6aa3eef68251,
         type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4438531309733706385, guid: 8d31447528e83a0448fae6b71c0f17f5,
+    - target: {fileID: 2334276833820299879, guid: 10280eb718d395540b1c6aa3eef68251,
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4438531309733706385, guid: 8d31447528e83a0448fae6b71c0f17f5,
+    - target: {fileID: 2334276833820299879, guid: 10280eb718d395540b1c6aa3eef68251,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: 4438531309733706385, guid: 8d31447528e83a0448fae6b71c0f17f5,
+    - target: {fileID: 2334276833820299879, guid: 10280eb718d395540b1c6aa3eef68251,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4438531309733706385, guid: 8d31447528e83a0448fae6b71c0f17f5,
+    - target: {fileID: 2334276833820299879, guid: 10280eb718d395540b1c6aa3eef68251,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3111658336038684893, guid: 10280eb718d395540b1c6aa3eef68251,
+        type: 3}
+      propertyPath: m_Name
+      value: Zipline Handle
+      objectReference: {fileID: 0}
+    - target: {fileID: 3111658336038684893, guid: 10280eb718d395540b1c6aa3eef68251,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471757120659499272, guid: 10280eb718d395540b1c6aa3eef68251,
+        type: 3}
+      propertyPath: m_ReceiveGI
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 8d31447528e83a0448fae6b71c0f17f5, type: 3}
---- !u!4 &5943405398778023600 stripped
+  m_SourcePrefab: {fileID: 100100000, guid: 10280eb718d395540b1c6aa3eef68251, type: 3}
+--- !u!4 &5507948313376560858 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 4438531309733706385, guid: 8d31447528e83a0448fae6b71c0f17f5,
+  m_CorrespondingSourceObject: {fileID: 2334276833820299879, guid: 10280eb718d395540b1c6aa3eef68251,
     type: 3}
-  m_PrefabInstance: {fileID: 8062537406243271713}
+  m_PrefabInstance: {fileID: 7788181324468962493}
   m_PrefabAsset: {fileID: 0}
