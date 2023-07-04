@@ -148,7 +148,6 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
 
 #region Climbing Actions
     public void Drop() {
-        Debug.Log("Let Go");
         // Send events
         if (_climbingHand == HandType.LEFT) {
             SendClimbingEvents(leftHandTransform.parent.gameObject, false);

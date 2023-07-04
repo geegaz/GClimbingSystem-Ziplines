@@ -96,7 +96,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3621531070361947680}
-  - component: {fileID: 768289670906100747}
+  - component: {fileID: 4215158085551548241}
   - component: {fileID: 3621531070361947682}
   - component: {fileID: 825351889487126947}
   - component: {fileID: 905279125396684323}
@@ -125,19 +125,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &768289670906100747
-SphereCollider:
+--- !u!136 &4215158085551548241
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3621531070361947683}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.4
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.2
+  m_Height: 0.5
+  m_Direction: 0
+  m_Center: {x: 0, y: -0.2, z: 0}
 --- !u!120 &3621531070361947682
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -262,13 +263,13 @@ MonoBehaviour:
   _climbingSystem: {fileID: 0}
   _forceDropOnStart: 0
   _forceDropOnStop: 1
-  _climbingOffset: {x: 0, y: -0.25, z: 0}
   line: {fileID: 0}
   startDelay: 1
   stopDelay: 1
   boostSpeed: 10
   rewindSpeed: 10
   _lineRenderer: {fileID: 3621531070361947682}
+  _lineOffset: {x: 0, y: 0, z: 0}
   _boostingContinuous: {fileID: 0}
   _startImpulse: {fileID: 5747493979421629960}
   _stopImpulse: {fileID: 0}

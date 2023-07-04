@@ -284,7 +284,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.4
+  m_Radius: 0.2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &269284393475829820
 MonoBehaviour:
@@ -317,8 +317,9 @@ MonoBehaviour:
   startDelay: 1
   stopDelay: 1
   boostSpeed: 10
-  rewindSpeed: 5
+  rewindSpeed: 20
   _lineRenderer: {fileID: 0}
+  _lineOffset: {x: 0, y: 0, z: 0}
   _boostingContinuous: {fileID: 2508578660855376584}
   _startImpulse: {fileID: 5119395148901535639}
   _stopImpulse: {fileID: 109448297302660616}

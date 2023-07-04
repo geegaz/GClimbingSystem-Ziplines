@@ -16,7 +16,6 @@ public class Booster : UdonSharpBehaviour
     [SerializeField] private SimpleClimbingSystem _climbingSystem;
     [SerializeField] private bool _forceDropOnStart = false;
     [SerializeField] private bool _forceDropOnStop = true;
-    //[SerializeField] private Vector3 _climbingOffset = Vector3.zero;
 
     [Header("Boost Properties")]
 
@@ -28,6 +27,7 @@ public class Booster : UdonSharpBehaviour
 
     [Space]
     [SerializeField] private LineRenderer _lineRenderer;
+    [SerializeField] private Vector3 _lineOffset = Vector3.zero;
     [Space]
 
     private float _boostTimeSpeed;
@@ -70,7 +70,7 @@ public class Booster : UdonSharpBehaviour
         if (line) {
             line.Place(transform, time);
             if (_lineRenderer && _lineRenderer.positionCount >= 2) {
-                _lineRenderer.SetPosition(0, transform.position);
+                _lineRenderer.SetPosition(0, transform.position + transform.rotation * _lineOffset);
                 _lineRenderer.SetPosition(1, line.targetPoint);
             }
         }
