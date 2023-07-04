@@ -1,5 +1,5 @@
 # Geegaz's Climbing & Ziplines System
-A fun and climbing system for VRChat, made with [UdonSharp](https://udonsharp.docs.vrchat.com/)
+A fun climbing system for VRChat, made with [UdonSharp](https://udonsharp.docs.vrchat.com/)
 
 ![](.img/Editor_Gizmos.png)
 
@@ -7,8 +7,12 @@ A fun and climbing system for VRChat, made with [UdonSharp](https://udonsharp.do
 
 - Configurable climbing system
 - Configurable jumping from climbed wall
-- **Original zipline system with custom editor**
-- Compatible VR & Desktop
+- VR & Desktop compatible 
+- **Original zipline system with editor tools**
+
+### Limitations
+- No stamina system
+- Can only grab with one hand at a time
 
 ## Installation
 
@@ -45,6 +49,7 @@ Name | Description | Path
 3. Drag the Climbing System from the scene in the corresponding field of the Booster
 4. Select the Line and select its type between `Simple, Weighted, Curved or Swing`
 5. Move the points of the line to give it the shape you want
+6. If needed, increase the baked points precision for longer Lines
 6. Ingame, **grab on the Booster to get moved along the Line**
 
 *Instead of the Booster prefab, you could also use the Pulley Handle for `Simple` Lines or the Swing Handle for `Swing` Lines*
