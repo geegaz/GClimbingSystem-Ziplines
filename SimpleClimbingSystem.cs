@@ -32,8 +32,8 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
     [Header("Events")]
     [SerializeField] private bool _sendEventsToClimbedObjects = true;
     [SerializeField] private UdonBehaviour _eventTarget;
-    [SerializeField] private string _startedEvent = "StartedClimbing";
-    [SerializeField] private string _stoppedEvent = "StoppedClimbing";
+    [SerializeField] private string _grabbedEvent = "ClimbingGrabbed";
+    [SerializeField] private string _droppedEvent = "ClimbingDropped";
 
     private bool _climbing = false;
     private HandType _climbingHand;
@@ -79,10 +79,11 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
                 jump_direction = headDirection;
             }
 
-            LetGo();
-            
+            // Let go with jump force
             Vector3 force = Vector3.Lerp(Vector3.up, jump_direction, walljumpViewDirectionAffect) * walljumpStrength;
-            localPlayer.SetVelocity(localPlayer.GetVelocity() + force);
+            _lastClimbedVelocity += force; // Add jump force to last velocity
+            
+            Drop();
         }
     }
 
@@ -140,13 +141,13 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
         }
         else if (!value && IsClimbingWith(hand)) {
             // Stop climbing
-            LetGo();
+            Drop();
         }
     }
 #endregion
 
 #region Climbing Actions
-    public void LetGo() {
+    public void Drop() {
         Debug.Log("Let Go");
         // Send events
         if (_climbingHand == HandType.LEFT) {
@@ -155,7 +156,7 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
         else {
             SendClimbingEvents(rightHandTransform.parent.gameObject, false);
         }
-        // Apply correct velocity
+        // Apply last velocity
         localPlayer.SetVelocity(_lastClimbedVelocity);
         
         _climbing = false;
@@ -163,20 +164,26 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
 
     public void Grab(HandType hand) {
         if (hand == HandType.LEFT) {
+            _lastClimbedPosition = leftHandTransform.position;
+            // Send events
             SendClimbingEvents(leftHandTransform.parent.gameObject, true);
             if (_climbing) SendClimbingEvents(rightHandTransform.parent.gameObject, false);
         }
         else {
+            _lastClimbedPosition = rightHandTransform.position;
+            // Send events
             SendClimbingEvents(rightHandTransform.parent.gameObject, true);
             if (_climbing) SendClimbingEvents(leftHandTransform.parent.gameObject, false);
         }
+        // Reset last velocity
+        _lastClimbedVelocity = Vector3.zero;
 
         _climbingHand = hand;
         _climbing = true;
     }
 
-    public void LetGoGrabbing(Transform tf) {
-        if (IsGrabbing(tf)) LetGo();
+    public void DropGrabbed(Transform tf) {
+        if (IsGrabbing(tf)) Drop();
     }
 
     public void ForceGrab(Transform tf, HandType hand, Vector3 offset) {
@@ -265,14 +272,14 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
         if (_sendEventsToClimbedObjects) {
             UdonBehaviour behavior = (UdonBehaviour)climbed_object.GetComponent(typeof(UdonBehaviour));
             if (behavior) {
-                if (started) behavior.SendCustomEvent(_startedEvent);
-                else  behavior.SendCustomEvent(_stoppedEvent);
+                if (started) behavior.SendCustomEvent(_grabbedEvent);
+                else  behavior.SendCustomEvent(_droppedEvent);
             }
         }
 
         if (_eventTarget) {
-            if (started) _eventTarget.SendCustomEvent(_startedEvent);
-            else  _eventTarget.SendCustomEvent(_stoppedEvent);
+            if (started) _eventTarget.SendCustomEvent(_grabbedEvent);
+            else  _eventTarget.SendCustomEvent(_droppedEvent);
         }
     }
 #endregion

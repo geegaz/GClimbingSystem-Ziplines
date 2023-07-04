@@ -173,7 +173,7 @@ public class Booster : UdonSharpBehaviour
         if (value) _lastInputHand = args.handType;
     }*/
 
-    public void StartedClimbing() {
+    public void ClimbingGrabbed() {
         if (state == -1) _SendStartEvent();
     }
 
@@ -189,14 +189,14 @@ public class Booster : UdonSharpBehaviour
         SetState(0);
         time = 0;
         
-        if (_forceDropOnStart && _climbingSystem) _climbingSystem.LetGoGrabbing(transform);
+        if (_forceDropOnStart && _climbingSystem) _climbingSystem.DropGrabbed(transform);
         if (_eventTarget) _eventTarget.SendCustomEvent(_startedEvent);
     }
 
     public void StopBoost() {
         SetState(2);
 
-        if (_forceDropOnStop && _climbingSystem) _climbingSystem.LetGoGrabbing(transform);
+        if (_forceDropOnStop && _climbingSystem) _climbingSystem.DropGrabbed(transform);
         if (_eventTarget) _eventTarget.SendCustomEvent(_stoppedEvent);
     }
     #endregion // Events
