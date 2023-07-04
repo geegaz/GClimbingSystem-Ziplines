@@ -17,7 +17,7 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
     [Tooltip("(VR only) Use the direction from the player's head to their free hand\ninstead of their view direction for walljump")]
     [SerializeField] private bool walljumpUseFreeHand = true;
     [Tooltip("When pressing Jump while on a wall:\n- 0 is a fully vertical jump\n- 1 is a jump in the direction the player is aiming")]
-    [SerializeField] private float walljumpViewDirectionAffect = 0.2f;
+    [SerializeField] private float walljumpViewDirectionAffect = 0.5f;
     [SerializeField] private float walljumpStrength = 5f;
 
     [Header("VR Options")]
@@ -37,6 +37,8 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
 
     private bool _climbing = false;
     private HandType _climbingHand;
+    private Vector3 _lastClimbedVelocity;
+    private Vector3 _lastClimbedPosition;
     private Collider[] grabSurfaces = new Collider[1];
     
     [HideInInspector] public VRCPlayerApi localPlayer;
@@ -58,7 +60,7 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
 #region Inputs
     public override void InputJump(bool value, UdonInputEventArgs args)
     {
-        if (walljumpEnabled && _climbing) {
+        if (value && walljumpEnabled && _climbing) {
             Vector3 jump_direction = Vector3.zero;
 
             Vector3 headPos; 
@@ -67,9 +69,9 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
             
             if (walljumpUseFreeHand && localPlayer.IsUserInVR()) {
                 Vector3 handPos;
-                Transform handTf;
+                Transform handTransform;
                 // Inverse of the current climbing hand
-                UpdateHandValues(1 - _climbingHand, out handPos, out handTf);
+                UpdateHandValues(_climbingHand == HandType.LEFT ? HandType.RIGHT : HandType.LEFT, out handPos, out handTransform);
 
                 jump_direction = (handPos - headPos).normalized;
             }
@@ -77,9 +79,10 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
                 jump_direction = headDirection;
             }
 
+            LetGo();
+            
             Vector3 force = Vector3.Lerp(Vector3.up, jump_direction, walljumpViewDirectionAffect) * walljumpStrength;
             localPlayer.SetVelocity(localPlayer.GetVelocity() + force);
-            LetGo();
         }
     }
 
@@ -144,12 +147,16 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
 
 #region Climbing Actions
     public void LetGo() {
+        Debug.Log("Let Go");
+        // Send events
         if (_climbingHand == HandType.LEFT) {
             SendClimbingEvents(leftHandTransform.parent.gameObject, false);
         }
         else {
             SendClimbingEvents(rightHandTransform.parent.gameObject, false);
         }
+        // Apply correct velocity
+        localPlayer.SetVelocity(_lastClimbedVelocity);
         
         _climbing = false;
     }
@@ -193,6 +200,10 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
             offset.y = heightDiff;
         }
         localPlayer.SetVelocity(offset * (1.0f / Time.deltaTime));
+        // Store the position and velocity of the target for this frame
+        // This should help keeping a correct velocity (mostly on desktop) when you let go
+        _lastClimbedVelocity = (handTransform.position - _lastClimbedPosition) * (1.0f / Time.deltaTime);
+        _lastClimbedPosition = handTransform.position;
     }
 #endregion
 
