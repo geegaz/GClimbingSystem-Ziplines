@@ -72,20 +72,26 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
     {
         if (value && walljumpEnabled && _climbing) {
             Vector3 jump_direction = Vector3.zero;
-
-            Vector3 headPos; 
-            Vector3 headDirection;
-            UpdateHeadValues(out headPos, out headDirection);
             
             if (inVR && walljumpUseFreeHand) {
-                Vector3 handPos;
-                Transform handTransform;
-                // Inverse of the current climbing hand
-                UpdateHandValues(_climbingHand == HandType.LEFT ? HandType.RIGHT : HandType.LEFT, out handPos, out handTransform);
-
-                jump_direction = (handPos - headPos).normalized;
+                Vector3 handBonePos;
+                Vector3 shoulderBonePos;
+                if (_climbingHand == HandType.LEFT) {
+                    handBonePos = localPlayer.GetBonePosition(HumanBodyBones.LeftHand);
+                    shoulderBonePos = localPlayer.GetBonePosition(HumanBodyBones.LeftShoulder);
+                }
+                else {
+                    handBonePos = localPlayer.GetBonePosition(HumanBodyBones.RightHand);
+                    shoulderBonePos = localPlayer.GetBonePosition(HumanBodyBones.RightShoulder);
+                }
+                
+                jump_direction = (handBonePos - shoulderBonePos).normalized;
             }
             else {
+                Vector3 headPos; 
+                Vector3 headDirection;
+                UpdateHeadValues(out headPos, out headDirection);
+
                 jump_direction = headDirection;
             }
 
