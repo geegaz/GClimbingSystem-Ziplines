@@ -41,11 +41,14 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
     private Vector3 _lastClimbedPosition;
     private Collider[] grabSurfaces = new Collider[1];
     
+    // Cache local player and VR status
     [HideInInspector] public VRCPlayerApi localPlayer;
+    [HideInInspector] public bool inVR;
     
     private void Start()
     {
         localPlayer = Networking.LocalPlayer;
+        inVR = localPlayer.IsUserInVR();
         if (leftHandTransform) leftHandTransform.localScale = Vector3.one * handRadius;
         if (rightHandTransform) rightHandTransform.localScale = Vector3.one * handRadius;
     }
@@ -53,11 +56,18 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
     public override void PostLateUpdate()
     {
         if (_climbing) {
-            DoGrab(_climbingHand, !localPlayer.IsUserInVR());
+            DoGrab(_climbingHand, !inVR);
         }
     }
 
 #region Inputs
+    // Jump Input Handling
+    // In VR and on Desktop, this event is sent when the jump button is used.
+    //
+    // This event is only used when climbing if walljumping is enabled. The direction of
+    // the walljump depends on the head direction on PC, and either the head direction
+    // or the non-climbing arm direction in VR if the climbing system is set to use the
+    // free hand for walljumping.
     public override void InputJump(bool value, UdonInputEventArgs args)
     {
         if (value && walljumpEnabled && _climbing) {
@@ -67,7 +77,7 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
             Vector3 headDirection;
             UpdateHeadValues(out headPos, out headDirection);
             
-            if (walljumpUseFreeHand && localPlayer.IsUserInVR()) {
+            if (inVR && walljumpUseFreeHand) {
                 Vector3 handPos;
                 Transform handTransform;
                 // Inverse of the current climbing hand
@@ -80,30 +90,43 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
             }
 
             // Let go with jump force
-            Vector3 force = Vector3.Lerp(Vector3.up, jump_direction, walljumpViewDirectionAffect) * walljumpStrength;
+            Vector3 force = Vector3.Slerp(Vector3.up, jump_direction, walljumpViewDirectionAffect) * walljumpStrength;
             _lastClimbedVelocity += force; // Add jump force to last velocity
             
             Drop();
         }
     }
 
+    
+    // Use Input Handling
+    // In VR, this event is sent when the trigger buttons are used.
+    // On Desktop, this event is sent when the left click is used.
+    //
+    // This event is always used on Desktop to simulate the left hand, and is 
+    // used in VR if the climbing system is set not to use the grip buttons.
     public override void InputUse(bool value, UdonInputEventArgs args)
     {
-        if (localPlayer.IsUserInVR()) {
+        if (inVR) {
             if (useGrabButton) return; // skip execution
 
             HandType hand = args.handType;
             ProcessInput(value, hand);
         }
         else {
-            // The Grab input is always Left Click on PC
+            // The Grab input is always Left Click on Desktop
             ProcessInput(value, HandType.LEFT);
         }
     }
 
+    // Grab Input Handling
+    // In VR, this event is sent when the grip button is used.
+    // On desktop, this event is also sent when the left click is used.
+    //
+    // Since the left click on Desktop is already handled by the InputUse event, this event is 
+    // only used in VR when the climbing system is set to use the grip buttons.
     public override void InputGrab(bool value, UdonInputEventArgs args)
     {
-        if (localPlayer.IsUserInVR()) {
+        if (inVR) {
             if (!useGrabButton) return; // Skip execution
             // Given that some controllers require a secondary button to drop,
             // it's necessary to only apply this if the input was just pressed
@@ -114,9 +137,15 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
         }
     }
 
+    // Drop Input Handling
+    // In VR, this event is sent when the grip button is released.
+    // On desktop, this event is sent when the right click is used.
+    // 
+    // This event is always used on Desktop to simulate the right hand, but is 
+    // only used in VR if the climbing system is set to use the grip buttons.
     public override void InputDrop(bool value, UdonInputEventArgs args)
     {
-        if (localPlayer.IsUserInVR()) {
+        if (inVR) {
             if (!useGrabButton) return; // Skip execution
             // Given that some controllers require a secondary button to drop,
             // it's necessary to only apply this if the input was just pressed
@@ -131,16 +160,27 @@ public class SimpleClimbingSystem : UdonSharpBehaviour
         }
     }
 
+    // Input Processing
+    // If the climbing hand lets go, then it makes the player drop.
+    // If a non-climbing hand grabs something, it makes the player start climbing.
+    //
+    // When one of the Use, Grab and Drop event is handled, this method checks whenever
+    // the climbing hand let go or if a non-climbing hand grabbed something (this can 
+    // either mean that the player was grounded and started grabbing with any hand,
+    // or that they started grabbing with their non-climbing hand).
     private void ProcessInput(bool value, HandType hand) {
+        // If the player grabbed with a non-climbing hand...
         if (value && !IsClimbingWith(hand)) {
-            bool can_grab = localPlayer.IsUserInVR() ? TestGrabVR(hand) : TestGrabDesktop(hand);
+            // ... check if that hand has something to grab, then...
+            bool can_grab = inVR ? TestGrabVR(hand) : TestGrabDesktop(hand);
             if (can_grab) {
-                // Start climbing
+                // ... climb with that hand
                 Grab(hand);
             }
         }
+        // if the player let go of the climbing hand...
         else if (!value && IsClimbingWith(hand)) {
-            // Stop climbing
+            // ... stop climbing
             Drop();
         }
     }

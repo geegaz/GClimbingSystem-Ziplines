@@ -1,4 +1,4 @@
-# Geegaz's Climbing & Ziplines System
+# Geegaz's Climbing System
 A fun climbing system for VRChat, made with [UdonSharp](https://udonsharp.docs.vrchat.com/)
 
 ![](.img/Editor_Gizmos.png)
