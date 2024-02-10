@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: ImpulseFeedback
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 0c217b961c105c640a5288542fe5c6ff,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 28e2f981290f0a84fb6bee2a6adde17c,
     type: 2}
   udonAssembly: 
   assemblyError: 
