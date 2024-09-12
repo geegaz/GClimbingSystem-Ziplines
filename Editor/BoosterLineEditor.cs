@@ -94,6 +94,7 @@ public class BoosterLineEditor : Editor
         EditorGUILayout.Space();
         // - Baking parameters
         showBakingOptions = EditorGUILayout.BeginFoldoutHeaderGroup(showBakingOptions, "Line Baking");
+        EditorGUILayout.EndFoldoutHeaderGroup();
         if (showBakingOptions) {
             EditorGUILayout.PropertyField(_bakedPointsPrecisionProp);
             // - Baked Points
@@ -101,7 +102,7 @@ public class BoosterLineEditor : Editor
             EditorGUILayout.PropertyField(_bakedPointsProp);
             EditorGUI.EndDisabledGroup();
         }
-        EditorGUILayout.EndFoldoutHeaderGroup();
+        
 
         serializedObject.ApplyModifiedProperties();
         if (EditorGUI.EndChangeCheck()) {
@@ -157,10 +158,10 @@ public class BoosterLineEditor : Editor
             case 2: // Handles for the Curved line type
             Handles.color = new Color(1f, 0.5f, 0f);
 
-            controlA = Handles.FreeMoveHandle(controlA, Quaternion.identity, 0.5f, Vector3.zero, Handles.SphereHandleCap);
+            var fmh_160_57_638617719717980129 = Quaternion.identity; controlA = Handles.FreeMoveHandle(controlA, 0.5f, Vector3.zero, Handles.SphereHandleCap);
             //controlA = Handles.DoPositionHandle(controlA, Quaternion.identity);
             Handles.DrawDottedLine(origin, controlA, 5f);
-            controlB = Handles.FreeMoveHandle(controlB, Quaternion.identity, 0.5f, Vector3.zero, Handles.SphereHandleCap);
+            var fmh_163_57_638617719718001079 = Quaternion.identity; controlB = Handles.FreeMoveHandle(controlB, 0.5f, Vector3.zero, Handles.SphereHandleCap);
             //controlB = Handles.DoPositionHandle(controlB, Quaternion.identity);
             Handles.DrawDottedLine(point, controlB, 5f);
             break;
@@ -186,7 +187,7 @@ public class BoosterLineEditor : Editor
         }
     }
 
-    [MenuItem("GameObject/Climbing System/Booster Line", false, 0)]
+    [MenuItem("GameObject/Ziplines/Booster Line", false, 0)]
     public static void Create() {
         Transform target = Selection.activeTransform;
 

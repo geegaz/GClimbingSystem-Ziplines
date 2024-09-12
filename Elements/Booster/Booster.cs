@@ -13,7 +13,7 @@ public class Booster : UdonSharpBehaviour
     public int state = -1;
 
     [Header("Climbing Properties")]
-    [SerializeField] private SimpleClimbingSystem _climbingSystem;
+    [SerializeField] private GClimbingSystem _climbingSystem;
     [SerializeField] private bool _forceDropOnStart = false;
     [SerializeField] private bool _forceDropOnStop = true;
 

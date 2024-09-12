@@ -68,7 +68,7 @@ public class BoosterEditor : Editor
         return origin + velocity * time + (Physics.gravity * time * time / 2f);
     }
 
-    [MenuItem("GameObject/Climbing System/Booster", false, 0)]
+    [MenuItem("GameObject/Ziplines/Booster", false, 0)]
     public static void Create() {
         Transform target = Selection.activeTransform;
 
