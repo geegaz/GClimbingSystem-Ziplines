@@ -1,6 +1,6 @@
-﻿using UdonSharp;
+using UdonSharp;
 using UnityEngine;
-using VRC.SDKBase;
+using VRC_GClimbing;
 using VRC.Udon;
 using VRC.Udon.Common;
 
